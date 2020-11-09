@@ -1,4 +1,6 @@
 import paho.mqtt.client as mqtt
+import dbconn
+
 
 # The callback for when the client receives a CONNACK response from the server.
 
@@ -14,11 +16,13 @@ def on_connect(client, userdata, flags, rc):
 
 
 def on_message(client, userdata, msg):
-    retain_string = "False"
-    if msg.retain:
-        retain_string = "True"
-    print(msg.topic+" " + str(msg.payload) + " quality of service: " +
-          str(msg.qos) + " retain attribute: " + str(retain_string))
+    # retain_string = "False"
+    # if msg.retain:
+    #     retain_string = "True"
+
+    dbconn.save_message(message=msg)
+    # print(msg.topic+" " + str(msg.payload) + " quality of service: " +
+    #       str(msg.qos) + " retain attribute: " + str(retain_string))
 
 
 client = mqtt.Client()

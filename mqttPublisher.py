@@ -4,6 +4,7 @@ import random
 import json
 import time
 import paho.mqtt.publish as publish
+import psutil
 
 
 TOPIC = "iotcourse/channel"
@@ -49,6 +50,14 @@ while True:
     now = datetime.datetime.now()
     temp = random.randint(0, 35)
 
+    virtual_mem = psutil.virtual_memory()
+    battery = psutil.sensors_battery()[0]
+
+    mem_total = virtual_mem.total
+    mem_available = virtual_mem.available
+
+    cpu_util = psutil.getloadavg()[0]
+
     # dd/mm/YY H:M:S
     dt_string = datetime.datetime.utcnow().strftime(
         '%d.%m.%Y %H:%M:%S.%f')[:-3]
@@ -56,8 +65,10 @@ while True:
         "time": dt_string,
         "id": device_id,
         "temp": temp,
-        "latitude": latitude,
-        "longitude": longitude
+        "battery": battery,
+        "memTotal": mem_total,
+        "memAvailable": mem_available,
+        "load": cpu_util
     }
 
     message_json = json.dumps(message)
